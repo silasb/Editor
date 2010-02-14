@@ -1,7 +1,7 @@
 #include <QtGui>
 #include "codeeditor.h"
 
-CodeEditor::CodeEditor(QWidget *parent) : QTextEdit(parent)
+CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
  {
      lineNumberArea = new LineNumberArea(this);
 
@@ -15,7 +15,6 @@ CodeEditor::CodeEditor(QWidget *parent) : QTextEdit(parent)
 
 int CodeEditor::lineNumberAreaWidth()
 {
-    /*
      int digits = 1;
      int max = qMax(1, blockCount());
      while (max >= 10) {
@@ -26,13 +25,11 @@ int CodeEditor::lineNumberAreaWidth()
      int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
 
      return space;
-     */
-    return true;
 }
 
 
 
- void CodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
+ void CodeEditor::updateLineNumberAreaWidth(int newBlockCount)
  {
      setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
  }
@@ -50,7 +47,7 @@ int CodeEditor::lineNumberAreaWidth()
 
  void CodeEditor::resizeEvent(QResizeEvent *e)
  {
-     QTextEdit::resizeEvent(e);
+     QPlainTextEdit::resizeEvent(e);
 
      QRect cr = contentsRect();
      lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
@@ -62,7 +59,7 @@ int CodeEditor::lineNumberAreaWidth()
          // do something
          QColor lineColor = QColor(Qt::blue).lighter(160);
      } else {
-         QTextEdit::keyPressEvent(event);
+         QPlainTextEdit::keyPressEvent(event);
      }
  }
 
@@ -87,12 +84,12 @@ int CodeEditor::lineNumberAreaWidth()
 
  void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
  {
-     /*
+
      QPainter painter(lineNumberArea);
      painter.fillRect(event->rect(), Qt::lightGray);
 
-
      QTextBlock block = firstVisibleBlock();
+
      int blockNumber = block.blockNumber();
      int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
      int bottom = top + (int) blockBoundingRect(block).height();
@@ -110,5 +107,4 @@ int CodeEditor::lineNumberAreaWidth()
          bottom = top + (int) blockBoundingRect(block).height();
          ++blockNumber;
      }
-     */
  }

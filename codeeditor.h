@@ -1,7 +1,7 @@
 #ifndef CODEEDITOR_H
 #define CODEEDITOR_H
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QObject>
 
 class QPaintEvent;
@@ -12,8 +12,7 @@ class QWidget;
 
 class LineNumberArea;
 
-
-class CodeEditor : public QTextEdit
+class CodeEditor : public QPlainTextEdit
 {
     Q_OBJECT
 
