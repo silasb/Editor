@@ -6,20 +6,20 @@
 #include "highlighter.h"
 
 namespace Ui {
-    class MainWindow;
+  class MainWindow;
 }
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
-public:
+  Q_OBJECT
+  public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-protected:
+  protected:
     void changeEvent(QEvent *e);
     void closeEvent(QCloseEvent *event);
 
-private:
+  private:
     Ui::MainWindow *ui;
     QString curFile;
 
@@ -33,8 +33,8 @@ private:
     void writeSettings();
     QString strippedName(const QString &fullFileName);
 
-private slots:
-    void quit();
+    private slots:
+      void quit();
     void open();
     bool save();
     void documentWasModified();

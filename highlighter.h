@@ -9,19 +9,19 @@ class QTextDocument;
 
 class Highlighter : public QSyntaxHighlighter
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
+  public:
     Highlighter(QTextDocument *parent = 0);
 
-protected:
+  protected:
     void highlightBlock(const QString &text);
 
-private:
+  private:
     struct HighlightingRule
     {
-        QRegExp pattern;
-        QTextCharFormat format;
+      QRegExp pattern;
+      QTextCharFormat format;
     };
     QVector<HighlightingRule> highlightingRules;
 

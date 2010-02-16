@@ -14,43 +14,43 @@ class LineNumberArea;
 
 class CodeEditor : public QPlainTextEdit
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
+  public:
     CodeEditor(QWidget *parent = 0);
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
 
-protected:
+  protected:
     void resizeEvent(QResizeEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
-private slots:
-    void updateLineNumberAreaWidth(int newBlockCount);
+    private slots:
+      void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
     void updateLineNumberArea(const QRect &, int);
 
-private:
+  private:
     QWidget *lineNumberArea;
 };
 
 class LineNumberArea : public QWidget
 {
-public:
+  public:
     LineNumberArea(CodeEditor *editor) : QWidget(editor) {
-        codeEditor = editor;
+      codeEditor = editor;
     }
     QSize sizeHint() const {
-        return QSize(codeEditor->lineNumberAreaWidth(), 0);
+      return QSize(codeEditor->lineNumberAreaWidth(), 0);
     }
 
-protected:
+  protected:
     void paintEvent(QPaintEvent *event) {
-        codeEditor->lineNumberAreaPaintEvent(event);
+      codeEditor->lineNumberAreaPaintEvent(event);
     }
 
-private:
+  private:
     CodeEditor *codeEditor;
 };
 
