@@ -12,3 +12,5 @@ HEADERS += mainwindow.h \
     ui_mainwindow.h \
     codeeditor.h
 RESOURCES += 
+# Eventually we will need this
+#CONFIG += static

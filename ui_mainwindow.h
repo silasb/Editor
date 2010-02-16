@@ -32,12 +32,14 @@ public:
     QAction *actionQuit;
     QAction *actionOpen;
     QAction *actionSave;
+    QAction *actionAbout;
     QWidget *centralWidget;
     CodeEditor *textEdit;
     QStatusBar *statusBar;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuEdit;
+    QMenu *menuHelp;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -53,6 +55,9 @@ public:
 
         actionSave = new QAction(MainWindow);
         actionSave->setObjectName(QString::fromUtf8("actionSave"));
+
+        actionAbout = new QAction(MainWindow);
+        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
 
         textEdit = new CodeEditor(MainWindow);
         textEdit->setObjectName(QString::fromUtf8("textEdit"));
@@ -73,6 +78,9 @@ public:
         menuEdit = new QMenu(menuBar);
         menuEdit->setObjectName(QString::fromUtf8("menuEdit"));
 
+        menuHelp = new QMenu(menuBar);
+        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
+
         MainWindow->setMenuBar(menuBar);
 
         menuBar->addAction(menuFile->menuAction());
@@ -84,10 +92,14 @@ public:
         menuBar->addAction(menuEdit->menuAction());
         //menuEdit->addAction(actionQuit);
 
+        menuBar->addAction(menuHelp->menuAction());
+        menuHelp->addAction(actionAbout);
+
         retranslateUi(MainWindow);
         QObject::connect(actionQuit, SIGNAL(triggered()), MainWindow, SLOT(quit()));
         QObject::connect(actionOpen, SIGNAL(triggered()), MainWindow, SLOT(open()));
         QObject::connect(actionSave, SIGNAL(triggered()), MainWindow, SLOT(save()));
+        QObject::connect(actionAbout, SIGNAL(triggered()), MainWindow, SLOT(about()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -95,6 +107,8 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Editor", 0, QApplication::UnicodeUTF8));
+
+        // File Menu
         actionQuit->setText(QApplication::translate("MainWindow", "Quit", 0, QApplication::UnicodeUTF8));
         actionQuit->setShortcut(QApplication::translate("MainWindow", "Alt+Q", 0, QApplication::UnicodeUTF8));
         actionOpen->setText(QApplication::translate("MainWindow", "Open", 0, QApplication::UnicodeUTF8));
@@ -102,7 +116,14 @@ public:
         actionSave->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
         actionSave->setShortcut(QApplication::translate("MainWindow", "Alt+S", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
+
+        // Edit Menu
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
+
+        // Help Menu
+        actionAbout->setText(QApplication::translate("MainWindow", "About", 0, QApplication::UnicodeUTF8));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0, QApplication::UnicodeUTF8));
+
     } // retranslateUi
 
 };

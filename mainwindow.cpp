@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QCloseEvent>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,28 +27,29 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupEditor()
 {
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "silasbaronda", "Editor");
+
     QFont font;
-    font.setFamily("Courier");
-    font.setFixedPitch(true);
-    font.setPointSize(10);
+    font.setFamily(settings.value("font/family").toString());
+    font.setFixedPitch(settings.value("font/fixed").toBool());
+    font.setPointSize(settings.value("font/size").toInt());
 
     ui->textEdit->setFont(font);
+
+    ui->textEdit->setCursorWidth(settings.value("general/cursor_width").toInt());
+    ui->textEdit->setTabStopWidth(settings.value("general/tabstop").toInt());
+    ui->textEdit->document()->setIndentWidth(settings.value("general/indention_width").toInt());
 
     highlighter = new Highlighter(ui->textEdit->document());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if(maybeSave())
+    if(maybeSave()) {
+      writeSettings();
         event->accept();
-    else
+    } else
         event->ignore();
-
-}
-
-void MainWindow::documentWasModified()
-{
-    setWindowModified(ui->textEdit->document()->isModified());
 }
 
 void MainWindow::changeEvent(QEvent *e)
@@ -62,11 +64,15 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
+/*
+ * SLOTS
+ */
 void MainWindow::quit()
 {
     if(maybeSave()) {
-        // write settings
-        QCoreApplication::exit(0);
+      writeSettings();
+
+      QCoreApplication::exit(0);
     }
 }
 
@@ -88,6 +94,20 @@ bool MainWindow::save()
 
     return saveFile(curFile);
 }
+
+void MainWindow::documentWasModified()
+{
+    setWindowModified(ui->textEdit->document()->isModified());
+}
+
+void MainWindow::about()
+{
+  QMessageBox::about(this, tr("About Editor"),
+      tr("<b>Editor</b> brought to you by Silas Baronda"));
+}
+/*
+ * END SLOTS
+ */
 
 bool MainWindow::saveAs()
 {
@@ -170,7 +190,28 @@ void MainWindow::setCurrentFile(const QString &fileName)
     setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("Editor")));
 }
 
+/* Utility methods */
 QString MainWindow::strippedName(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
+}
+
+void MainWindow::writeSettings()
+{
+      QSettings settings(QSettings::IniFormat, QSettings::UserScope, "silasbaronda", "Editor");
+
+      settings.beginGroup("general");
+      settings.setValue("tabstop", ui->textEdit->tabStopWidth());
+      settings.setValue("cursor_width", ui->textEdit->cursorWidth());
+      settings.setValue("indention_width", ui->textEdit->document()->indentWidth());
+      settings.endGroup();
+
+      settings.beginGroup("font");
+      settings.setValue("family", ui->textEdit->font().family());
+      settings.setValue("size", ui->textEdit->font().pointSize());
+      settings.setValue("fixed", ui->textEdit->font().fixedPitch());
+      settings.endGroup();
+
+      settings.setValue("highlight_line", true);
+      settings.setValue("syntax", true);
 }

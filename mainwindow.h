@@ -30,6 +30,7 @@ private:
     bool saveAs();
     void setCurrentFile(const QString &fileName);
     bool maybeSave();
+    void writeSettings();
     QString strippedName(const QString &fullFileName);
 
 private slots:
@@ -37,6 +38,7 @@ private slots:
     void open();
     bool save();
     void documentWasModified();
+    void about();
 };
 
 #endif // MAINWINDOW_H

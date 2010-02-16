@@ -2,7 +2,7 @@
 #include "codeeditor.h"
 
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
- {
+{
      lineNumberArea = new LineNumberArea(this);
 
      connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
@@ -29,10 +29,10 @@ int CodeEditor::lineNumberAreaWidth()
 
 
 
- void CodeEditor::updateLineNumberAreaWidth(int newBlockCount)
- {
-     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
- }
+void CodeEditor::updateLineNumberAreaWidth(int newBlockCount)
+{
+    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+}
 
  void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
  {
@@ -56,8 +56,7 @@ int CodeEditor::lineNumberAreaWidth()
  void CodeEditor::keyPressEvent(QKeyEvent *event)
  {
      if (event->key() == Qt::Key_Escape) {
-         // do something
-         QColor lineColor = QColor(Qt::blue).lighter(160);
+       ;
      } else {
          QPlainTextEdit::keyPressEvent(event);
      }
