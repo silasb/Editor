@@ -13,6 +13,8 @@ class LineNumberArea;
 
 class CodeEditor : public QPlainTextEdit
 {
+  Q_OBJECT
+
   public:
     CodeEditor(QWidget *parent = 0);
 
