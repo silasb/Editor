@@ -21,17 +21,27 @@ class CodeEditor : public QPlainTextEdit
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
 
+    void setHighlightCurrentLine(bool b);
+    bool highlightCurrentLine();
+
+    void setLineNumbersVisible(bool b);
+    bool lineNumbersVisible();
+
+
   protected:
     void resizeEvent(QResizeEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
-    private slots:
-      void updateLineNumberAreaWidth(int newBlockCount);
-    void highlightCurrentLine();
+  private slots:
+    void slotUpdateExtraAreaWidth();
+    void slotCursorPositionChanged();
     void updateLineNumberArea(const QRect &, int);
 
   private:
     QWidget *lineNumberArea;
+    void updateCurrentLineHighlight();
+    bool m_highlightCurrentLine;
+    bool m_lineNumbersVisible;
 };
 
 class LineNumberArea : public QWidget

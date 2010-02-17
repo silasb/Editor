@@ -40,6 +40,8 @@ void MainWindow::setupEditor()
   ui->textEdit->setTabStopWidth(settings.value("general/tabstop").toInt());
   ui->textEdit->document()->setIndentWidth(settings.value("general/indention_width").toInt());
 
+  ui->textEdit->setWordWrapMode(QTextOption::NoWrap);
+
   highlighter = new Highlighter(ui->textEdit->document());
 }
 
@@ -82,7 +84,7 @@ void MainWindow::open()
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open File"),
         "",
-        tr("Source Files (*.cpp *.c *.py);;All Files(*)"));
+        tr("Source Files (*.cpp *.c *.h *.py);;All Files(*)"));
     if(!fileName.isEmpty())
       loadFile(fileName);
   }
