@@ -6,7 +6,7 @@ SOURCES += main.cpp \
            mainwindow.cpp \
            highlighter.cpp \
            codeeditor.cpp
-HEADER += mainwindow.h \
+HEADERS += mainwindow.h \
           highlighter.h \
           ui_mainwindow.h \
           codeeditor.h
