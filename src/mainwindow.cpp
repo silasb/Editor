@@ -27,6 +27,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupEditor()
 {
+
+
+
   QSettings settings(QSettings::IniFormat, QSettings::UserScope, "silasbaronda", "Editor");
 
   QFont font;
