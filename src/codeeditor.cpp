@@ -25,12 +25,13 @@ void CodeEditor::slotUpdateExtraAreaWidth()
 
 int CodeEditor::lineNumberAreaWidth()
 {
-  int digits = 1;
+  int digits = 3;
+
   int max = qMax(1, blockCount());
-  while (max >= 10) {
-    max /= 10;
-    ++digits;
-  }
+  if(max >= 1000 && max < 10000)
+    digits = 4;
+  else if(max >= 10000)
+    digits = 5;
 
   int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
 
@@ -54,7 +55,8 @@ void CodeEditor::resizeEvent(QResizeEvent *e)
   QPlainTextEdit::resizeEvent(e);
 
   QRect cr = contentsRect();
-  lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+  lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), 
+        lineNumberAreaWidth(), cr.height()));
 }
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
@@ -113,8 +115,8 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     if (block.isVisible() && bottom >= event->rect().top()) {
       QString number = QString::number(blockNumber + 1);
       painter.setPen(Qt::black);
-      painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-          Qt::AlignRight, number);
+      painter.drawText(0, top, lineNumberArea->width(), 
+          fontMetrics().height(), Qt::AlignRight, number);
     }
 
     block = block.next();
