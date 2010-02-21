@@ -30,15 +30,39 @@ void MainWindow::setupEditor()
   QSettings settings(QSettings::IniFormat, QSettings::UserScope, "silasbaronda", "Editor");
 
   QFont font;
-  font.setFamily(settings.value("font/family").toString());
-  font.setFixedPitch(settings.value("font/fixed").toBool());
-  font.setPointSize(settings.value("font/size").toInt());
+  if(settings.contains("font/family"))
+    font.setFamily(settings.value("font/family").toString());
+  else
+    font.setFamily("DroidSansMono");
+
+  if(settings.contains("font/fixed"))
+    font.setFixedPitch(settings.value("font/fixed").toBool());
+  else
+    font.setFixedPitch(false);
+
+  if(settings.contains("font/size"))
+    font.setPointSize(settings.value("font/size").toInt());
+  else
+    font.setPointSize(9);
 
   ui->textEdit->setFont(font);
 
-  ui->textEdit->setCursorWidth(settings.value("general/cursor_width").toInt());
-  ui->textEdit->setTabStopWidth(settings.value("general/tabstop").toInt());
-  ui->textEdit->document()->setIndentWidth(settings.value("general/indention_width").toInt());
+  // Eliminate cursor width
+  // should always be 2
+  if(settings.contains("general/cursor_width"))
+    ui->textEdit->setCursorWidth(settings.value("general/cursor_width").toInt());
+  else
+    ui->textEdit->setCursorWidth(2);
+
+  if(settings.contains("general/tabstop"))
+    ui->textEdit->setTabStopWidth(settings.value("general/tabstop").toInt());
+  else
+    ui->textEdit->setTabStopWidth(80);
+
+  if(settings.contains("general/indention_width"))
+    ui->textEdit->document()->setIndentWidth(settings.value("general/indention_width").toInt());
+  else
+    ui->textEdit->document()->setIndentWidth(80);
 
   ui->textEdit->setWordWrapMode(QTextOption::NoWrap);
 
