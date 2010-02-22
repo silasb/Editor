@@ -33,7 +33,7 @@ int CodeEditor::lineNumberAreaWidth()
   else if(max >= 10000)
     digits = 5;
 
-  int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
+  int space = 5 + fontMetrics().width(QLatin1Char('9')) * digits;
 
   return space;
 }
@@ -115,7 +115,7 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     if (block.isVisible() && bottom >= event->rect().top()) {
       QString number = QString::number(blockNumber + 1);
       painter.setPen(Qt::black);
-      painter.drawText(0, top, lineNumberArea->width(), 
+      painter.drawText(0, top, lineNumberArea->width() - 2,
           fontMetrics().height(), Qt::AlignRight, number);
     }
 

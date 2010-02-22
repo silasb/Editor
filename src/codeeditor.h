@@ -51,7 +51,7 @@ class LineNumberArea : public QWidget
       codeEditor = editor;
     }
     QSize sizeHint() const {
-      return QSize(codeEditor->lineNumberAreaWidth(), 0);
+      return QSize(codeEditor->lineNumberAreaWidth() + 1, 0);
     }
 
   protected:
