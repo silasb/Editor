@@ -42,6 +42,7 @@ class CodeEditor : public QPlainTextEdit
     void updateCurrentLineHighlight();
     bool m_highlightCurrentLine;
     bool m_lineNumbersVisible;
+    int  m_spaces;
 };
 
 class LineNumberArea : public QWidget

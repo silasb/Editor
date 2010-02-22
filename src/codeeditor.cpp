@@ -11,6 +11,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 
   slotUpdateExtraAreaWidth();
   updateCurrentLineHighlight();
+  m_spaces = 4;
 }
 
 void CodeEditor::slotCursorPositionChanged()
@@ -61,8 +62,20 @@ void CodeEditor::resizeEvent(QResizeEvent *e)
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
 {
-  if (event->key() == Qt::Key_Escape) {
-    ;
+  if (event->key() == Qt::Key_Tab) {
+    QTextCursor cursor;
+    cursor = textCursor();
+    cursor.clearSelection();
+    for(int i = 0; i < m_spaces; i++)
+      cursor.insertText(" ");
+    setTextCursor(cursor);
+  } else if(event->key() == Qt::Key_Backtab) {
+    QTextCursor cursor;
+    cursor = textCursor();
+    cursor.clearSelection();
+    for(int i = 0; i < m_spaces; i++)
+      cursor.deletePreviousChar();
+    setTextCursor(cursor);
   } else {
     QPlainTextEdit::keyPressEvent(event);
   }
