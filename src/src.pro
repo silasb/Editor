@@ -11,3 +11,7 @@ HEADERS += mainwindow.h \
           ui_mainwindow.h \
           codeeditor.h
 RESOURCES +=
+
+win32:debug {
+  CONFIG += console
+}
