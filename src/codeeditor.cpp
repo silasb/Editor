@@ -3,61 +3,49 @@
 
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 {
-  lineNumberArea = new LineNumberArea(this);
+  gutterArea = new GutterArea(this);
 
-  connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(slotUpdateExtraAreaWidth()));
-  connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(updateLineNumberArea(const QRect &, int)));
+  connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(slotUpdateGutterAreaWidth()));
+  connect(this, SIGNAL(updateRequest(const QRect &, int)), this, SLOT(slotUpdateRequest(QRect, int)));
   connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPositionChanged()));
 
-  slotUpdateExtraAreaWidth();
+  slotUpdateGutterAreaWidth();
   updateCurrentLineHighlight();
   m_spaces = 4;
 }
 
+// SLOTS
 void CodeEditor::slotCursorPositionChanged()
 {
   updateCurrentLineHighlight();
 }
 
-void CodeEditor::slotUpdateExtraAreaWidth()
+void CodeEditor::slotUpdateGutterAreaWidth()
 {
-  setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+  setViewportMargins(gutterAreaWidth(), 0, 0, 0);
 }
 
-int CodeEditor::lineNumberAreaWidth()
-{
-  int digits = 3;
-
-  int max = qMax(1, blockCount());
-  if(max >= 1000 && max < 10000)
-    digits = 4;
-  else if(max >= 10000)
-    digits = 5;
-
-  int space = 5 + fontMetrics().width(QLatin1Char('9')) * digits;
-
-  return space;
-}
-
-void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
+void CodeEditor::slotUpdateRequest(const QRect &rect, int dy)
 {
   if (dy)
-    lineNumberArea->scroll(0, dy);
+    gutterArea->scroll(0, dy);
   else if(rect.width() > 4) {
-    lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+    gutterArea->update(0, rect.y(), gutterArea->width(), rect.height());
   }
 
   if (rect.contains(viewport()->rect()))
-    slotUpdateExtraAreaWidth();
+    slotUpdateGutterAreaWidth();
 }
+// SLOTS
 
+// EVENTS
 void CodeEditor::resizeEvent(QResizeEvent *e)
 {
   QPlainTextEdit::resizeEvent(e);
 
   QRect cr = contentsRect();
-  lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), 
-        lineNumberAreaWidth(), cr.height()));
+  gutterArea->setGeometry(QRect(cr.left(), cr.top(), 
+        gutterAreaWidth(), cr.height()));
 }
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
@@ -81,6 +69,35 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
   }
 }
 
+void CodeEditor::gutterAreaPaintEvent(QPaintEvent *event)
+{
+  QPainter painter(gutterArea);
+  painter.fillRect(event->rect(), Qt::lightGray);
+
+  QTextBlock block = firstVisibleBlock();
+
+  int blockNumber = block.blockNumber();
+  int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
+  int bottom = top + (int) blockBoundingRect(block).height();
+
+  while (block.isValid() && top <= event->rect().bottom()) {
+    if (block.isVisible() && bottom >= event->rect().top()) {
+      QString number = QString::number(blockNumber + 1);
+      painter.setPen(Qt::black);
+      painter.drawText(0, top, gutterArea->width() - 2,
+          fontMetrics().height(), Qt::AlignRight, number);
+    }
+
+    block = block.next();
+    top = bottom;
+    bottom = top + (int) blockBoundingRect(block).height();
+    ++blockNumber;
+  }
+}
+
+// end EVENTS
+
+// SETTERS GETTERS
 void CodeEditor::setHighlightCurrentLine(bool b)
 {
   m_highlightCurrentLine = b;
@@ -95,8 +112,14 @@ bool CodeEditor::highlightCurrentLine()
 void CodeEditor::setLineNumbersVisible(bool b)
 {
   m_highlightCurrentLine = b;
-  slotUpdateExtraAreaWidth();
+  slotUpdateGutterAreaWidth();
 }
+
+bool CodeEditor::lineNumbersVisible()
+{
+  return m_lineNumbersVisible;
+}
+// end SETTERS GETTERS
 
 void CodeEditor::updateCurrentLineHighlight()
 {
@@ -113,28 +136,18 @@ void CodeEditor::updateCurrentLineHighlight()
   setExtraSelections(extraSelections);
 }
 
-void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
+int CodeEditor::gutterAreaWidth()
 {
-  QPainter painter(lineNumberArea);
-  painter.fillRect(event->rect(), Qt::lightGray);
+  int digits = 3;
 
-  QTextBlock block = firstVisibleBlock();
+  int max = qMax(1, blockCount());
+  if(max >= 1000 && max < 10000)
+    digits = 4;
+  else if(max >= 10000)
+    digits = 5;
 
-  int blockNumber = block.blockNumber();
-  int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
-  int bottom = top + (int) blockBoundingRect(block).height();
+  int space = 5 + fontMetrics().width(QLatin1Char('9')) * digits;
 
-  while (block.isValid() && top <= event->rect().bottom()) {
-    if (block.isVisible() && bottom >= event->rect().top()) {
-      QString number = QString::number(blockNumber + 1);
-      painter.setPen(Qt::black);
-      painter.drawText(0, top, lineNumberArea->width() - 2,
-          fontMetrics().height(), Qt::AlignRight, number);
-    }
-
-    block = block.next();
-    top = bottom;
-    bottom = top + (int) blockBoundingRect(block).height();
-    ++blockNumber;
-  }
+  return space;
 }
+

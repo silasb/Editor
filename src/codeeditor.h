@@ -18,46 +18,48 @@ class CodeEditor : public QPlainTextEdit
   public:
     CodeEditor(QWidget *parent = 0);
 
-    void lineNumberAreaPaintEvent(QPaintEvent *event);
-    int lineNumberAreaWidth();
+    void gutterAreaPaintEvent(QPaintEvent *event);
+    int gutterAreaWidth();
 
+    // SETTERS GETTERS
     void setHighlightCurrentLine(bool b);
     bool highlightCurrentLine();
 
     void setLineNumbersVisible(bool b);
     bool lineNumbersVisible();
-
+    // end
 
   protected:
     void resizeEvent(QResizeEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
   private slots:
-    void slotUpdateExtraAreaWidth();
+    void slotUpdateGutterAreaWidth();
     void slotCursorPositionChanged();
-    void updateLineNumberArea(const QRect &, int);
+    void slotUpdateRequest(const QRect &, int);
 
   private:
-    QWidget *lineNumberArea;
-    void updateCurrentLineHighlight();
+    QWidget *gutterArea;
     bool m_highlightCurrentLine;
     bool m_lineNumbersVisible;
     int  m_spaces;
+
+    void updateCurrentLineHighlight();
 };
 
-class LineNumberArea : public QWidget
+class GutterArea : public QWidget
 {
   public:
-    LineNumberArea(CodeEditor *editor) : QWidget(editor) {
+    GutterArea(CodeEditor *editor) : QWidget(editor) {
       codeEditor = editor;
     }
     QSize sizeHint() const {
-      return QSize(codeEditor->lineNumberAreaWidth() + 1, 0);
+      return QSize(codeEditor->gutterAreaWidth() + 1, 0);
     }
 
   protected:
     void paintEvent(QPaintEvent *event) {
-      codeEditor->lineNumberAreaPaintEvent(event);
+      codeEditor->gutterAreaPaintEvent(event);
     }
 
   private:
